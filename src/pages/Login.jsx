@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const Login = () => {
@@ -105,7 +105,7 @@ const Login = () => {
         </form>
         
         <p className="text-sm text-center mt-6 text-gray-600">
-          Don’t have an account? <a href="#" className="text-blue-500 hover:underline">Sign up</a>
+          Don’t have an account? <Link href="#" className="text-blue-500 hover:underline">Sign up</Link>
         </p>
       </div>
     </div>
