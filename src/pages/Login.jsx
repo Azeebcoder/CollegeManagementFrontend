@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+
+import { toast } from 'react-toastify';
+
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const Login = () => {
@@ -41,17 +44,17 @@ const Login = () => {
       })
       const { data } = response;
       if (!data.success) {
-        alert(data.message);
+        toast.error(data.message)
         return;
       }
-      alert('Login successful!');
+      toast.success("Login Successfull ! ")
       navigate("/");
 
 
     }
     catch (err) {
       console.error(err);
-      alert('An error occurred during login.');
+      toast.success('An error occurred during login.');
     }
 
 

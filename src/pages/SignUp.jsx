@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
+import { toast } from 'react-toastify';
+
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -12,8 +14,6 @@ const SignUp = () => {
   const [semester, setSemester] = useState("");
   const [city, setCity] = useState("");
   const [college, setCollege] = useState("");
-  const [otp, setOtp] = useState("");
-  const [isOtpSent, setIsOtpSent] = useState(false);
 
   const navigate = useNavigate();
 
@@ -53,56 +53,22 @@ const SignUp = () => {
           semester,
           city,
           college,
-        }
+        },
+        {withCredentials:true}
       );
 
       if (!response.data.success) {
-        alert(response.data.message);
+        toast.error(response.data.message)
         return;
       }
-
-      const otpResponse = await axios.get(
-        `${backendUrl}/api/auth/send-email`,
-        {
-          params: { email },
-        }
-      );
-
-      if (!otpResponse.data.success) {
-        alert(otpResponse.data.message);
-        return;
-      }
-
-      alert("OTP sent to your email.");
-      setIsOtpSent(true);
+      navigate("/verify-otp");
     } catch (err) {
       console.error(err);
-      alert("An error occurred during signup.");
+      toast.error("An error occurred during signup.")
     }
   };
 
-  const handleOtpVerify = async () => {
-    try {
-      const verifyRes = await axios.post(
-        `${backendUrl}/api/auth/verify-otp`,
-        {
-          otp,
-        }
-      );
-
-      if (!verifyRes.data.success) {
-        alert(verifyRes.data.message);
-        return;
-      }
-
-      alert("Account verified successfully!");
-      navigate("/login");
-    } catch (err) {
-      console.error(err);
-      alert("Failed to verify OTP.");
-    }
-  };
-
+  
   return (
     <div className="bg-cyan-600 w-full h-screen flex justify-center items-center">
       <form
@@ -110,12 +76,10 @@ const SignUp = () => {
         onSubmit={handleSignUp}
       >
         <h2 className="text-3xl font-bold text-center text-cyan-700 mb-6">
-          {isOtpSent ? "Verify OTP" : "Sign Up"}
+          Sign Up
         </h2>
 
-        {!isOtpSent ? (
-          <>
-            <div className="space-y-4">
+        <div className="space-y-4">
               <Input
                 label="Full Name"
                 value={username}
@@ -171,28 +135,6 @@ const SignUp = () => {
                 Create Account
               </button>
             </div>
-          </>
-        ) : (
-          <>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Enter OTP
-            </label>
-            <input
-              type="text"
-              placeholder="123456"
-              className="w-full px-4 py-3 mb-4 rounded-lg border"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-            />
-            <button
-              type="button"
-              onClick={handleOtpVerify}
-              className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg transition"
-            >
-              Verify OTP
-            </button>
-          </>
-        )}
 
         <p className="text-sm text-center text-gray-600 mt-5">
           Already have an account?{" "}
