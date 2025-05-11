@@ -14,6 +14,7 @@ const SignUp = () => {
   const [semester, setSemester] = useState("");
   const [city, setCity] = useState("");
   const [college, setCollege] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -39,6 +40,7 @@ const SignUp = () => {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     axios.defaults.withCredentials = true;
 
     try {
@@ -59,11 +61,13 @@ const SignUp = () => {
 
       if (!response.data.success) {
         toast.error(response.data.message)
+        setIsLoading(false);
         return;
       }
       navigate("/verify-otp");
     } catch (err) {
       console.error(err);
+      setIsLoading(false);
       toast.error("An error occurred during signup.")
     }
   };
@@ -105,6 +109,7 @@ const SignUp = () => {
                 value={rollNo}
                 onChange={setRollNo}
                 type="number"
+                placeholder="123456789"
               />
               <Input label="Course" value={course} onChange={setCourse} />
               <div>
@@ -132,7 +137,9 @@ const SignUp = () => {
                 type="submit"
                 className="w-full bg-cyan-600 hover:bg-cyan-700 text-white py-3 rounded-lg transition"
               >
-                Create Account
+                {isLoading ? ("loading...") : (
+                  "Sign Up"
+                )}
               </button>
             </div>
 
