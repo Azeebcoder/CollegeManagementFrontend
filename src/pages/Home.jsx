@@ -97,6 +97,12 @@ const Home = () => {
           >
             Show All Users
           </button>
+          <button
+            onClick={() => navigate("/update-profile")}
+            className="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-xl transition"
+          >
+            Update Profile
+          </button>
         </div>
       </div>
 

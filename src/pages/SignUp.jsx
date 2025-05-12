@@ -68,7 +68,7 @@ const SignUp = () => {
     } catch (err) {
       console.error(err);
       setIsLoading(false);
-      toast.error("An error occurred during signup.")
+      toast.error(err.message)
     }
   };
 
