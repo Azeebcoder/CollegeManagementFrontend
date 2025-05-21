@@ -8,10 +8,6 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const Home = () => {
   const navigate = useNavigate();
-  const [users, setUsers] = useState([]);
-  const [showUsers, setShowUsers] = useState(false);
-  const [forbidden, setForbidden] = useState(false);
-
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -41,37 +37,6 @@ const Home = () => {
       console.error("Logout failed:", error);
     }
   };
-
-  const fetchUsers = async () => {
-    try {
-      const response = await axios.get(
-        `${backendUrl}/api/admin/get-all-users`,
-        {
-          withCredentials: true,
-        }
-      );
-
-      if (!response.data.success) {
-        setShowUsers(false);
-        setForbidden(true); // backend says "not allowed"
-        toast.error(response.data.message || "Forbidden");
-        return;
-      }
-
-      setUsers(response.data.users);
-      setShowUsers(true);
-      setForbidden(false);
-    } catch (error) {
-      console.error("Failed to fetch users:", error);
-      if (error.response && error.response.status === 403) {
-        setForbidden(true);
-        toast.error("❌ Forbidden: Admins only");
-      } else {
-        toast.error("Error fetching users");
-      }
-    }
-  };
-
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
       <div className="text-center bg-white shadow-xl rounded-2xl p-10 max-w-md w-full animate-fade-in mb-4">
@@ -92,7 +57,7 @@ const Home = () => {
             Logout
           </button>
           <button
-            onClick={fetchUsers}
+            onClick={() => navigate("/users")}
             className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition"
           >
             Show All Users
@@ -105,37 +70,6 @@ const Home = () => {
           </button>
         </div>
       </div>
-
-      {showUsers && (
-        <div className="bg-white shadow-md rounded-xl p-6 w-full max-w-md mt-4">
-          <h2 className="text-xl font-semibold text-gray-700 mb-3">
-            All Users:
-          </h2>
-          <ul className="text-gray-600 list-disc list-inside">
-            {users.length > 0 ? (
-              users.map((user, index) => (
-                <li
-                  key={index}
-                  onClick={() => navigate(`/user/${user._id}`)}
-                  className="cursor-pointer text-blue-600 hover:underline"
-                >
-                  {user.name || user.email}
-                </li>
-              ))
-            ) : (
-              <li>No users found.</li>
-            )}
-          </ul>
-        </div>
-      )}
-
-      {forbidden && (
-        <div className="bg-white shadow-md rounded-xl p-6 w-full max-w-md mt-4">
-          <h2 className="text-xl font-semibold text-red-600">
-            ❌ Forbidden: Admins Only
-          </h2>
-        </div>
-      )}
     </div>
   );
 };
